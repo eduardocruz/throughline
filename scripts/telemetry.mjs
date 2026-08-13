@@ -61,6 +61,9 @@ export async function ping(event, repoRoot) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // Ask for JSON explicitly: without it Laravel answers a malformed
+        // payload with a 302 to a login page instead of a 422.
+        Accept: 'application/json',
         'User-Agent': `throughline-plugin/${PLUGIN_VERSION}`,
       },
       body: payload,
