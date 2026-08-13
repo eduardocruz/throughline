@@ -13,7 +13,7 @@ Runs entirely on your machine. No account, no signup, no data leaves the repo.
 
 ```
 /plugin marketplace add eduardocruz/marketplace
-/plugin install throughline@eduardocruz
+/plugin install throughline@eduardocruz-marketplace
 ```
 
 ## Use
