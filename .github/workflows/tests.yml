@@ -1,0 +1,32 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # The plugin claims to run wherever Claude Code runs. Claude Code
+        # requires Node 22+, so test that floor — and test Windows, which is the
+        # platform that motivated moving off Python in the first place.
+        os: [ubuntu-latest, windows-latest]
+        node-version: ["22.x", "24.x"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run the check catalogue tests
+        run: node --test "tests/*.test.mjs"
+
+      - name: Snapshot must run clean against this repo
+        env:
+          THROUGHLINE_TELEMETRY: "0"
+        run: node scripts/snapshot.mjs . --all

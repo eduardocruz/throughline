@@ -1,0 +1,19 @@
+{
+  "name": "throughline",
+  "description": "Give your AI agent the context it is missing about your business: a local goal ladder, three active guidelines, sourced decisions, and a one-shot diagnosis of your repo. Runs entirely on your machine.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Eduardo Cruz",
+    "url": "https://eduardocruz.com"
+  },
+  "homepage": "https://eduardocruz.com/throughline",
+  "keywords": [
+    "context",
+    "agent-context",
+    "code-review",
+    "audit",
+    "technical-due-diligence",
+    "goals",
+    "decision-log"
+  ]
+}
