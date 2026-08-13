@@ -16,7 +16,7 @@ import { ping } from './telemetry.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = path.join(HERE, '..', 'templates');
-const TEMPLATES = ['goals.md', 'guidelines.md', 'decisions.md', 'actions.md'];
+const TEMPLATES = ['goals.md', 'actions.md'];
 
 const README = `# .throughline/
 
@@ -25,9 +25,7 @@ The context your AI agent reads before it does anything in this repository.
 | File | What it answers |
 |---|---|
 | \`goals.md\` | What are we trying to do, at four timescales? |
-| \`guidelines.md\` | What are the three rules the agent must respect? |
-| \`decisions.md\` | What has already been decided (and why)? |
-| \`actions.md\` | Who owes what, and where did it come from? |
+| \`actions.md\` | What is open, and who has it? |
 
 Keep these true. An agent reading a stale goal ladder is more confidently wrong
 than an agent reading nothing.
@@ -82,9 +80,8 @@ async function main(argv) {
       'From now on your agent reads .throughline/ before it proposes work,',
       'estimates, or makes a technical call — in every session, in this repo.',
       '',
-      'Next: fill in the week goal in .throughline/goals.md and the first',
-      'guideline in .throughline/guidelines.md. Both are useless empty, and',
-      'the agent will read them either way.',
+      'Next: fill in the week goal in .throughline/goals.md. It is useless',
+      'empty, and the agent will read it either way.',
       '',
       'Nothing updates these files except you. /throughline:check measures',
       'whether that has started to show.',

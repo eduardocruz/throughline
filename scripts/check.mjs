@@ -1,13 +1,11 @@
 /**
  * Measure structural decay of a .throughline/ directory.
  *
- * This is not a linter for prose. It measures the four ways a hand-maintained
+ * This is not a linter for prose. It measures the two ways a hand-maintained
  * context file stops being true:
  *
  *     1. the week goal stopped moving
- *     2. the guidelines stopped changing
- *     3. decisions are being recorded without a source
- *     4. action items are open and static
+ *     2. action items are open and static
  *
  * Nothing here is a judgement call — each signal is a date or a count, and each
  * one names the file it came from.
@@ -35,7 +33,6 @@ export function stripFences(body) {
 }
 
 const GOAL_STALE_DAYS = 14;
-const GUIDELINES_STALE_DAYS = 21;
 const ACTION_STALE_DAYS = 30;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -84,34 +81,6 @@ export function analyse(target, now = Date.now()) {
       signals.push({
         id: 'goal-stale',
         detail: `.throughline/goals.md has not changed in ${age} days (a week goal should move weekly)`,
-      });
-    }
-  }
-
-  const guidelinesPath = path.join(target, 'guidelines.md');
-  const guidelines = read(guidelinesPath);
-  if (guidelines !== null) {
-    const filled = (guidelines.match(/\*\*Rule:\*\*[^\S\n]*\S/g) ?? []).length;
-    const age = lastChangedDays(guidelinesPath, now);
-    if (filled === 0) {
-      signals.push({ id: 'guidelines-empty', detail: 'no guideline is filled in .throughline/guidelines.md' });
-    } else if (age !== null && age > GUIDELINES_STALE_DAYS) {
-      signals.push({
-        id: 'guidelines-stale',
-        detail: `${filled} guideline(s) unchanged for ${age} days — nothing new has been learned from an incident since`,
-      });
-    }
-  }
-
-  const decisions = read(path.join(target, 'decisions.md'));
-  if (decisions !== null) {
-    const blocks = stripFences(decisions).split(/^##\s+/m).slice(1);
-    const real = blocks.filter((block) => !block.startsWith('YYYY-MM-DD'));
-    const sourceless = real.filter((block) => !/\*\*Source:\*\*[^\S\n]*\S/.test(block)).length;
-    if (real.length > 0 && sourceless > 0) {
-      signals.push({
-        id: 'decisions-sourceless',
-        detail: `${sourceless} of ${real.length} decision(s) in .throughline/decisions.md have no Source`,
       });
     }
   }

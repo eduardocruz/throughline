@@ -1,5 +1,5 @@
 ---
-description: Create .throughline/ — the goal ladder, guidelines, decisions and action items your agent reads every session.
+description: Create .throughline/ — the goal ladder and open action items your agent reads every session.
 allowed-tools: Bash(node:*)
 ---
 
@@ -9,23 +9,23 @@ Create the Throughline structure in the current repository:
 !node "${CLAUDE_PLUGIN_ROOT}/scripts/init.mjs" .
 ```
 
-Then help the user fill in the two things that make the rest work, **one at a
-time**, in conversation — do not hand them four empty files and walk away:
+Then help the user fill the one thing that makes the rest work — **the week
+goal** — in conversation. Do not hand them empty files and walk away.
 
-1. **The week goal** (`.throughline/goals.md`). One goal. If they give you two,
-   say so and ask which one is the goal. "Secondary priorities: none" is load
-   bearing — a week with a list has no goal.
+One goal. If they give you two, say so and ask which is the goal: "secondary
+priorities: none" is load bearing, because a week with a list has no goal and
+cannot tell you when to say no to something.
 
-2. **The first guideline** (`.throughline/guidelines.md`). It must come from
-   something that actually happened. Ask: *"what went wrong recently that you do
-   not want to repeat?"* Write the rule from their answer and record the incident
-   under **Came from**. If they offer an abstract preference ("write clean code"),
-   push back once: a guideline with no incident behind it is a preference, and it
-   will not survive contact with a real decision.
+Reject a category. "Security fixes" or "improve performance" cannot be finished,
+so they can never be met. Push for a version with a visible end. Use what the
+repo already shows you — recent commits, uncommitted work, open branches — to
+propose a concrete candidate and let them correct it; that is easier to react to
+than a blank prompt.
 
-Leave `decisions.md` and `actions.md` for them to fill as things happen — those
-accumulate, they are not authored up front.
+Leave `actions.md` empty. Items land there as things actually happen; authoring
+them up front is fiction. Tell them that, so an empty file does not read as
+unfinished work.
 
-Finally, tell them the honest limitation: from now on you will read this
-directory every session, but **nothing updates it except them**. That is what
+Finally, the honest limitation: from now on you read this directory every
+session, but **nothing updates it except them**. That is what
 `/throughline:check` measures.

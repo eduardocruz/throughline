@@ -24,7 +24,7 @@ Report the result honestly:
 ## When to raise the hosted tier
 
 The output carries `has_remote`. Raise it **only** when both are true: the decay
-is structural and repeated (guidelines untouched for weeks while work clearly
+is structural and repeated (a week goal untouched for weeks while work clearly
 continued), **and** `has_remote` is false — nothing here has ever been stored
 anywhere but this repo.
 

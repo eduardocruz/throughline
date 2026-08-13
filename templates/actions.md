@@ -1,29 +1,14 @@
 # Action items
 
-Who owes what. Provenance is tracked because an item your agent invented and an
-item that came out of a real conversation are not the same kind of promise, and
-collapsing them poisons the record.
-
-- `origin: meeting` — came from a conversation with a human.
-- `origin: agent` — your AI agent proposed it as a follow-up.
-
-Format:
+What is open, and who has it. One line each — no categories, no ceremony:
 
 ```
-- [ ] <what> — owner: <who> · origin: meeting|agent · since: YYYY-MM-DD
+- [ ] <what> — <who>
 ```
 
----
-
-## On you
-
-- [ ]
-
-## On someone else
+Move finished items under Done instead of deleting them: the record of what got
+closed is what makes the goal above auditable.
 
 - [ ]
 
 ## Done
-
-<!-- Move items here rather than deleting them: the record of what got finished
-     is what makes the goal ladder above auditable. -->

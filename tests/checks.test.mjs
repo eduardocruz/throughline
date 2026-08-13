@@ -234,43 +234,35 @@ describe('runAll', () => {
 });
 
 describe('decay analysis', () => {
+  function initFrom() {
+    const target = path.join(root, '.throughline');
+    fs.mkdirSync(target, { recursive: true });
+    for (const name of ['goals.md', 'actions.md']) {
+      fs.copyFileSync(path.join(import.meta.dirname, '..', 'templates', name), path.join(target, name));
+    }
+    return target;
+  }
+
   test('a freshly initialised .throughline is reported as empty, not healthy', () => {
     // Regression: `\s` matches newlines in JS, so `**Goal:**` followed by a
     // blank line looked FILLED. The conversion mechanism never fired.
-    const target = path.join(root, '.throughline');
-    fs.mkdirSync(target, { recursive: true });
-    for (const name of ['goals.md', 'guidelines.md', 'decisions.md', 'actions.md']) {
-      fs.copyFileSync(path.join(import.meta.dirname, '..', 'templates', name), path.join(target, name));
-    }
-
-    const ids = analyse(target).map((s) => s.id);
+    const ids = analyse(initFrom()).map((s) => s.id);
     assert.ok(ids.includes('goal-empty'), `expected goal-empty, got ${ids}`);
-    assert.ok(ids.includes('guidelines-empty'), `expected guidelines-empty, got ${ids}`);
   });
 
-  test('a filled goal and guideline are not reported as empty', () => {
-    const target = path.join(root, '.throughline');
-    fs.mkdirSync(target, { recursive: true });
+  test('a filled goal is not reported as empty', () => {
+    const target = initFrom();
     fs.writeFileSync(path.join(target, 'goals.md'), '## Week of 2026-08-10\n\n**Goal:** Ship the invite flow\n\n**Secondary priorities:** none\n');
-    fs.writeFileSync(path.join(target, 'guidelines.md'), '## 1.\n\n**Rule:** Never deploy on Friday afternoon\n**Came from:** the 2026-07-04 outage\n');
-
     const ids = analyse(target).map((s) => s.id);
     assert.ok(!ids.includes('goal-empty'), `unexpected goal-empty in ${ids}`);
-    assert.ok(!ids.includes('guidelines-empty'), `unexpected guidelines-empty in ${ids}`);
   });
 
-  test('counts decisions recorded without a source', () => {
-    const target = path.join(root, '.throughline');
-    fs.mkdirSync(target, { recursive: true });
-    fs.writeFileSync(
-      path.join(target, 'decisions.md'),
-      '## 2026-08-01 — use Postgres\n**Why:** jsonb\n**Source:** https://example.com/thread\n\n'
-      + '## 2026-08-05 — drop the mobile app\n**Why:** no users\n**Source:**\n',
-    );
-
-    const signal = analyse(target).find((s) => s.id === 'decisions-sourceless');
-    assert.ok(signal, 'expected a decisions-sourceless signal');
-    assert.match(signal.detail, /1 of 2/);
+  test('the actions template does not count as open items', () => {
+    // The template documents its format in a fenced example; an example is not
+    // an action item.
+    const target = initFrom();
+    const ids = analyse(target).map((s) => s.id);
+    assert.ok(!ids.includes('actions-static'), `unexpected actions-static in ${ids}`);
   });
 });
 
@@ -279,7 +271,7 @@ describe('onboarding state', () => {
     const target = path.join(root, '.throughline');
     fs.mkdirSync(target, { recursive: true });
     if (templates) {
-      for (const name of ['goals.md', 'guidelines.md', 'decisions.md', 'actions.md']) {
+      for (const name of ['goals.md', 'actions.md']) {
         fs.copyFileSync(path.join(import.meta.dirname, '..', 'templates', name), path.join(target, name));
       }
     }

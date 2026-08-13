@@ -3,8 +3,7 @@
 **Give your AI agent the context it is missing about your business.**
 
 Your agent knows your code. It does not know what you are trying to do this
-week, which decisions are already settled, or which mistake you have promised
-never to repeat. Throughline is where that lives — as four markdown files in
+week, or what is still open and on whom. Throughline is where that lives — as four markdown files in
 your repo that your agent reads every session.
 
 Runs entirely on your machine. No account, no signup, no data leaves the repo.
@@ -25,8 +24,7 @@ One command to remember:
 ```
 
 It reads the state of the repository and takes you from there — a diagnosis
-first if you have nothing yet, filling in the goal and first guideline if you
-do, and a staleness report if you are already set up. Nothing is written until
+first if you have nothing yet, filling in the week goal if you do, and a staleness report if you are already set up. Nothing is written until
 you say so.
 
 The individual steps, if you already know which one you want:
@@ -62,17 +60,14 @@ repeated most often across real engagements:
 ```
 .throughline/
 ├── goals.md        year → quarter → month → one goal for this week
-├── guidelines.md   up to 3 rules, each from a real incident
-├── decisions.md    what is settled, and why, with a source
-└── actions.md      who owes what, and where it came from
+└── actions.md      what is open, and who has it
 ```
 
 From then on the bundled skill makes your agent read these before it proposes
 work, estimates, or makes a technical call.
 
 **`/throughline:check`** measures whether that context is still true: a week goal
-that stopped moving, guidelines unchanged for weeks, decisions recorded without
-a source, action items open and static.
+that stopped moving, action items open and static.
 
 ## The honest limitation
 

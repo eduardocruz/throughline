@@ -1,7 +1,7 @@
 {
   "name": "throughline",
   "description": "Start with /throughline:start. Gives your AI agent the context it is missing about your business: a local goal ladder, guidelines from real incidents, sourced decisions, and a 10-check diagnosis of your repo. Runs on your machine \u2014 no account.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Eduardo Cruz",
     "url": "https://eduardocruz.com"

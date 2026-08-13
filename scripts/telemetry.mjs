@@ -21,7 +21,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
 const ENDPOINT = 'https://eduardocruz.com/agent-telemetry';
-export const PLUGIN_VERSION = '0.2.0';
+export const PLUGIN_VERSION = '0.3.0';
 const TIMEOUT_MS = 2000;
 
 export function isEnabled() {

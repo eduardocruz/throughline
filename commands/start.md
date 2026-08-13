@@ -35,25 +35,21 @@ Run `/throughline:snapshot` and report the findings under that command's rules:
 evidence first, no inflation, and if it found nothing say so plainly.
 
 **Gate.** Ask one question: do they want the structure that keeps this from
-being a one-off? Name what changes — from then on the agent reads a goal ladder
-and up to three guidelines in every session in this repo. If they say no, stop
+being a one-off? Name what changes — from then on the agent reads the goal ladder in every session in
+this repo. If they say no, stop
 cleanly; the snapshot was already worth the five seconds.
 
 ### Beat 3 — create it (`suggested_next: "fill"`, or after a yes above)
 
-Run `/throughline:init`, then fill the two fields that make the rest work, **one
-at a time**:
+Run `/throughline:init`, then fill the one field that makes the rest work: **the
+week goal**. One. If they give you two, say so and ask which is the goal —
+"secondary priorities: none" is load bearing. Reject a category: "security
+fixes" cannot be finished, so it can never tell you when to say no to something.
+Use what the repo shows you — recent commits, uncommitted work — to propose a
+concrete version and let them correct it.
 
-1. **The week goal.** One. If they give you two, say so and ask which is the
-   goal — "secondary priorities: none" is load bearing.
-2. **The first guideline.** Ask what went wrong recently that they do not want
-   repeated, and write the rule from their answer with the incident under
-   **Came from**. If they offer an abstract preference ("write clean code"),
-   push back once: a guideline with no incident behind it will not survive
-   contact with a real decision.
-
-Leave `decisions.md` and `actions.md` empty — those accumulate, they are not
-authored up front. Say that, so the empty files do not read as unfinished.
+Leave `actions.md` empty. Items land there as things happen; authoring them up
+front is fiction. Say that, so an empty file does not read as unfinished.
 
 ### Beat 4 — land it
 
@@ -72,8 +68,8 @@ Skip everything above. Run `/throughline:check` and report it.
 ## Rules
 
 - **One question per turn.** Three at once gets one vague answer.
-- **Never invent content.** No fabricated findings, no plausible-sounding
-  guideline they did not choose. Blank beats invented.
+- **Never invent content.** No fabricated findings, no goal they did not
+  choose. Blank beats invented.
 - **Every gate is a real stop.** If they decline, the flow ends there without a
   second attempt.
 - **Do not mention anything hosted or paid in this flow.** This is the free path

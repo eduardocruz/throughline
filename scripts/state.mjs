@@ -16,7 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
-const CONTEXT_FILES = ['goals.md', 'guidelines.md', 'decisions.md', 'actions.md'];
+const CONTEXT_FILES = ['goals.md', 'actions.md'];
 
 /** Rough stack label, for orientation only — not used by any check. */
 export function detectStack(root) {
@@ -66,11 +66,6 @@ export function isFilled(name, rawBody) {
   switch (name) {
     case 'goals.md':
       return /\*\*Goal:\*\*[^\S\n]*\S/.test(body);
-    case 'guidelines.md':
-      return /\*\*Rule:\*\*[^\S\n]*\S/.test(body);
-    case 'decisions.md':
-      // A real decision has a dated heading that is not the placeholder.
-      return /^##\s+(?!YYYY-MM-DD)\S.*$/m.test(body);
     case 'actions.md':
       // A real action item has text after the checkbox.
       return /^[^\S\n]*-[^\S\n]*\[[ x]\][^\S\n]*\S/m.test(body);
@@ -118,8 +113,10 @@ export function inspect(root) {
     has_context: hasContext,
     context,
     // The single most useful field: what this user should do next.
+    // An empty actions.md is the normal steady state, not a gap — only a
+    // missing week goal means the setup was never finished.
     suggested_next: !hasContext ? 'snapshot'
-      : Object.values(context).every((v) => v === 'empty' || v === 'missing') ? 'fill'
+      : context['goals.md'] !== 'filled' ? 'fill'
         : 'check',
   };
 }
