@@ -23,6 +23,17 @@ import { execFileSync } from 'node:child_process';
 
 import { ping } from './telemetry.mjs';
 
+/**
+ * Drop fenced code blocks before measuring content.
+ *
+ * The templates document their own format with worked examples — `actions.md`
+ * ships a fenced `- [ ] <what> — owner: …` line — and an example is not content.
+ * Without this, every template reads as filled the moment it is created.
+ */
+export function stripFences(body) {
+  return body.replace(/^```[\s\S]*?^```/gm, '');
+}
+
 const GOAL_STALE_DAYS = 14;
 const GUIDELINES_STALE_DAYS = 21;
 const ACTION_STALE_DAYS = 30;
@@ -94,7 +105,7 @@ export function analyse(target, now = Date.now()) {
 
   const decisions = read(path.join(target, 'decisions.md'));
   if (decisions !== null) {
-    const blocks = decisions.split(/^##\s+/m).slice(1);
+    const blocks = stripFences(decisions).split(/^##\s+/m).slice(1);
     const real = blocks.filter((block) => !block.startsWith('YYYY-MM-DD'));
     const sourceless = real.filter((block) => !/\*\*Source:\*\*[^\S\n]*\S/.test(block)).length;
     if (real.length > 0 && sourceless > 0) {
@@ -108,7 +119,7 @@ export function analyse(target, now = Date.now()) {
   const actionsPath = path.join(target, 'actions.md');
   const actions = read(actionsPath);
   if (actions !== null) {
-    const open = (actions.match(/^\s*-\s*\[ \]\s*\S.*$/gm) ?? []).length;
+    const open = (stripFences(actions).match(/^[^\S\n]*-[^\S\n]*\[ \][^\S\n]*\S.*$/gm) ?? []).length;
     const age = lastChangedDays(actionsPath, now);
     if (open > 0 && age !== null && age > ACTION_STALE_DAYS) {
       signals.push({
@@ -133,10 +144,14 @@ async function main(argv) {
   }
 
   const signals = analyse(target);
+  // Never connected + real decay is the only moment worth mentioning the hosted
+  // tier. Detected, not asked for — a command nobody remembers to run converts
+  // nobody.
+  const hasRemote = fs.existsSync(path.join(target, 'remote.json'));
   await ping('check', root);
 
   if (flags.has('--json')) {
-    process.stdout.write(`${JSON.stringify({ repo: root, signals }, null, 2)}\n`);
+    process.stdout.write(`${JSON.stringify({ repo: root, signals, has_remote: hasRemote }, null, 2)}\n`);
     return 0;
   }
 
@@ -156,11 +171,14 @@ async function main(argv) {
     'human remembers to change it, and the work that should update it —',
     'email, Slack threads, meetings, PRs — never arrives here on its own.',
     '',
-    'That is what the hosted tier does: it feeds this directory from the',
-    'channels the decisions actually happen in, so the record stays true',
-    'without anyone maintaining it. /throughline:connect',
-    '',
   );
+
+  if (!hasRemote) {
+    out.push(
+      'Nothing here has ever been stored anywhere but this repo.',
+      '',
+    );
+  }
 
   process.stdout.write(`${out.join('\n')}\n`);
   return 0;

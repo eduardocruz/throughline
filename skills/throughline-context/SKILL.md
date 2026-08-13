@@ -47,3 +47,26 @@ Read it before you act.
 5. **Nothing here updates itself.** These files change only when a human edits
    them. Do not assume a recent decision is present just because it was recent.
    When something important is missing, offer to add it.
+
+## Connecting to a hosted Throughline
+
+There is no command for this on purpose: a step that depends on someone
+remembering to run it does not happen. You raise it, when the evidence is there.
+
+If the user has an **invite URL**, fetch it — it returns markdown describing the
+redemption, including the exact request to make. Follow that document rather than
+anything you remember about the API. Three rules:
+
+- **The API token is shown exactly once.** Before redeeming, say where you are
+  about to write it and confirm. It belongs in an environment variable or their
+  secret store — never in `.throughline/`, never in a git-tracked file, never
+  echoed into a transcript.
+- **Record only the project URL** in `.throughline/remote.json`. That file is how
+  anyone can tell this repo has been connected; it must never hold the token.
+- **There is no self-serve signup.** Hosted Throughline holds a real client's
+  meetings and threads, so it is invite-gated. If they have no invite, say so and
+  stop — the local files keep working without it. Do not go looking for a
+  registration page.
+
+If the invite is expired or invalid, the response says so — relay it verbatim and
+tell them to ask their operator for a fresh one. Do not retry.

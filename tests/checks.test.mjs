@@ -24,6 +24,7 @@ import {
   runAll,
 } from '../scripts/checks.mjs';
 import { analyse } from '../scripts/check.mjs';
+import { inspect } from '../scripts/state.mjs';
 
 let root;
 
@@ -270,5 +271,45 @@ describe('decay analysis', () => {
     const signal = analyse(target).find((s) => s.id === 'decisions-sourceless');
     assert.ok(signal, 'expected a decisions-sourceless signal');
     assert.match(signal.detail, /1 of 2/);
+  });
+});
+
+describe('onboarding state', () => {
+  function initFrom(templates = true) {
+    const target = path.join(root, '.throughline');
+    fs.mkdirSync(target, { recursive: true });
+    if (templates) {
+      for (const name of ['goals.md', 'guidelines.md', 'decisions.md', 'actions.md']) {
+        fs.copyFileSync(path.join(import.meta.dirname, '..', 'templates', name), path.join(target, name));
+      }
+    }
+    return target;
+  }
+
+  test('a virgin repo is sent to the snapshot', () => {
+    assert.equal(inspect(root).suggested_next, 'snapshot');
+  });
+
+  test('a freshly created .throughline is sent to filling, not to check', () => {
+    // Regression: `## On you` in the actions template read as content, and the
+    // `- [ ]` counter matched across the newline — so a brand new directory
+    // looked complete and the flow skipped the only step that matters.
+    initFrom();
+    const state = inspect(root);
+    assert.equal(state.context['actions.md'], 'empty', 'empty template must not read as filled');
+    assert.equal(state.suggested_next, 'fill');
+  });
+
+  test('a filled goal sends the user to check', () => {
+    const target = initFrom();
+    fs.writeFileSync(path.join(target, 'goals.md'), '## Week of 2026-08-10\n\n**Goal:** Ship it\n');
+    assert.equal(inspect(root).suggested_next, 'check');
+  });
+
+  test('reports whether a remote was ever configured', () => {
+    const target = initFrom();
+    assert.equal(inspect(root).has_remote, false);
+    fs.writeFileSync(path.join(target, 'remote.json'), '{"url":"https://example.com/p"}');
+    assert.equal(inspect(root).has_remote, true);
   });
 });

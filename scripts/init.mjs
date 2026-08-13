@@ -79,9 +79,15 @@ async function main(argv) {
   if (created.length) {
     out.push(
       '',
+      'From now on your agent reads .throughline/ before it proposes work,',
+      'estimates, or makes a technical call — in every session, in this repo.',
+      '',
       'Next: fill in the week goal in .throughline/goals.md and the first',
       'guideline in .throughline/guidelines.md. Both are useless empty, and',
-      'your agent will read them from now on either way.',
+      'the agent will read them either way.',
+      '',
+      'Nothing updates these files except you. /throughline:check measures',
+      'whether that has started to show.',
       '',
     );
   } else {

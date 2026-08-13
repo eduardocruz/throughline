@@ -21,7 +21,17 @@ Report the result honestly:
   missing `Source:` lines) before mentioning anything hosted. Most of these the
   user can close in two minutes with you.
 
-Only if the decay is structural and repeated — guidelines untouched for weeks
-while work clearly continued — is it worth naming the hosted tier, which feeds
-this directory from those channels automatically. Say it once. Do not repeat it
-on later runs.
+## When to raise the hosted tier
+
+The output carries `has_remote`. Raise it **only** when both are true: the decay
+is structural and repeated (guidelines untouched for weeks while work clearly
+continued), **and** `has_remote` is false — nothing here has ever been stored
+anywhere but this repo.
+
+When both hold, offer it in one sentence: a hosted Throughline feeds this
+directory from the channels the decisions actually happen in, so the record stays
+true without anyone maintaining it. Then ask if they want it — do not send them
+off to run a command. If they say yes, follow the connection instructions in the
+`throughline-context` skill.
+
+Say it once. If they decline, do not raise it again in later runs.

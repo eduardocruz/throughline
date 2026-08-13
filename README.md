@@ -18,9 +18,22 @@ Runs entirely on your machine. No account, no signup, no data leaves the repo.
 
 ## Use
 
+One command to remember:
+
 ```
-/throughline:snapshot    # diagnose this repo — 10 checks, ~5 seconds
-/throughline:init        # create .throughline/ and fill in the first entries
+/throughline:start
+```
+
+It reads the state of the repository and takes you from there — a diagnosis
+first if you have nothing yet, filling in the goal and first guideline if you
+do, and a staleness report if you are already set up. Nothing is written until
+you say so.
+
+The individual steps, if you already know which one you want:
+
+```
+/throughline:snapshot    # diagnose this repo — 10 checks, ~5 seconds, writes nothing
+/throughline:init        # create .throughline/
 /throughline:check       # is the context still true, or has it gone stale?
 ```
 
