@@ -12,7 +12,7 @@ Runs entirely on your machine. No account, no signup, no data leaves the repo.
 ## Install
 
 ```
-/plugin marketplace add eduardocruz/throughline
+/plugin marketplace add eduardocruz/marketplace
 /plugin install throughline@eduardocruz
 ```
 
