@@ -87,21 +87,33 @@ and the local tier does not expire or degrade without it.
 Everything runs locally: the snapshot reads your files but never uploads them,
 and no finding, path, or file name leaves your machine.
 
-The one network call is an anonymous usage ping — and this is its entire payload:
+**Nothing is sent anywhere unless you say yes.** There is no ping on install and
+none on first run. `/throughline:start` asks once whether you are willing to send
+an anonymous usage ping; until you answer yes, the network is never touched. The
+answer is stored in `~/.throughline/config.json` and applies to every repository
+on this machine. Change your mind at any time:
+
+```
+node scripts/consent.mjs off     # or: on, status
+export THROUGHLINE_TELEMETRY=0   # overrides a stored yes
+```
+
+If you do say yes, this is the entire payload, every time:
 
 ```json
 {"event": "snapshot", "repo_hash": "a1b2c3d4e5f60718",
- "plugin_version": "0.1.0", "ts": "2026-08-12T14:00:00Z"}
+ "plugin_version": "0.3.1", "ts": "2026-08-12T14:00:00Z"}
 ```
 
-`repo_hash` is a truncated SHA-256 of your git remote URL. It lets us count
-repositories without knowing which they are.
+`repo_hash` is an HMAC of your git remote URL, keyed with a random secret
+generated on your machine that is never transmitted. It is stable across runs,
+so it distinguishes "this repo again" from "a new repo" — and because the key
+never leaves your machine, the value cannot be matched back to a repository by
+anyone holding it, including us. The same repository on someone else's machine
+produces a different value.
 
-Turn it off completely:
-
-```
-export THROUGHLINE_TELEMETRY=0
-```
+To be complete about what a network call reveals regardless of payload: like any
+HTTP request, it shows your IP address to the receiving server.
 
 ## Requirements
 

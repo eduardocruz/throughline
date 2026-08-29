@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { consentState } from './telemetry.mjs';
 
 const CONTEXT_FILES = ['goals.md', 'actions.md'];
 
@@ -112,6 +113,9 @@ export function inspect(root) {
     stack: detectStack(root),
     has_context: hasContext,
     context,
+    // 'granted' | 'denied' | 'unset'. Only 'unset' means the start flow still
+    // has a question to ask; nothing is ever sent unless it is 'granted'.
+    telemetry_consent: consentState(),
     // The single most useful field: what this user should do next.
     // An empty actions.md is the normal steady state, not a gap — only a
     // missing week goal means the setup was never finished.

@@ -1,35 +1,109 @@
 /**
- * Anonymous install/usage ping.
+ * Usage ping — off until you turn it on.
  *
- * What leaves the machine, in full:
+ * Nothing is sent unless you have explicitly said yes. There is no ping on
+ * first run, and no ping while the answer is still unset. `/throughline:start`
+ * asks once; the answer is remembered in `~/.throughline/config.json` and
+ * applies to every repository on this machine.
+ *
+ * When it is on, this is what leaves the machine, in full:
  *
  *     {"event": "snapshot", "repo_hash": "a1b2c3d4e5f60718",
- *      "plugin_version": "0.1.0", "ts": "2026-08-12T14:00:00Z"}
+ *      "plugin_version": "0.3.1", "ts": "2026-08-12T14:00:00Z"}
  *
- * `repo_hash` is sha256 of the git remote URL, truncated. It identifies a
- * repository across runs without naming it, and it is not reversible to the URL
- * without already knowing the URL. No file contents, no paths, no file names,
- * no findings, no user, no directory name ever leaves the machine.
+ * `repo_hash` is an HMAC of your git remote URL, keyed with a random secret
+ * generated on your machine and never sent. It is stable across runs, so it can
+ * tell "this repo again" from "a new repo" — and because the key never leaves
+ * your machine, the value cannot be matched back to a repository by anyone who
+ * holds it, including us. The same repo on someone else's machine hashes to a
+ * different value.
  *
- * Opt out with `THROUGHLINE_TELEMETRY=0`.
+ * No file contents, no paths, no file names, no findings, no user, no directory
+ * name are ever included. What the request itself unavoidably reveals, like any
+ * HTTP call, is your IP address to the receiving server.
+ *
+ * Turn it off again at any time: `node scripts/consent.mjs off`, or set
+ * `THROUGHLINE_TELEMETRY=0`, which overrides a stored yes.
  *
  * Every failure here is silent by design. Telemetry that degrades the tool is
  * worse than no telemetry.
  */
 
-import { createHash } from 'node:crypto';
+import { createHmac, randomBytes } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 const ENDPOINT = 'https://eduardocruz.com/agent-telemetry';
-export const PLUGIN_VERSION = '0.3.0';
+export const PLUGIN_VERSION = '0.3.1';
 const TIMEOUT_MS = 2000;
 
-export function isEnabled() {
-  const raw = (process.env.THROUGHLINE_TELEMETRY ?? '1').trim().toLowerCase();
-  return !['0', 'false', 'no', 'off'].includes(raw);
+export const CONFIG_DIR = process.env.THROUGHLINE_CONFIG_DIR
+  ?? path.join(os.homedir(), '.throughline');
+export const CONFIG_PATH = path.join(CONFIG_DIR, 'config.json');
+
+function readConfig() {
+  try {
+    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
 }
 
-/** Stable, non-reversible id for a repository. `local` when there is no remote. */
+function writeConfig(config) {
+  fs.mkdirSync(CONFIG_DIR, { recursive: true });
+  fs.writeFileSync(CONFIG_PATH, `${JSON.stringify(config, null, 2)}\n`, { mode: 0o600 });
+}
+
+/**
+ * 'granted' | 'denied' | 'unset'.
+ *
+ * `unset` is the state a fresh install is in, and it behaves exactly like
+ * `denied` — silence until someone actually answers. The two are kept distinct
+ * only so the start flow knows whether it still has a question to ask.
+ */
+export function consentState() {
+  const env = (process.env.THROUGHLINE_TELEMETRY ?? '').trim().toLowerCase();
+  if (['0', 'false', 'no', 'off'].includes(env)) return 'denied';
+
+  const stored = readConfig().telemetry;
+  if (stored === true) return 'granted';
+  if (stored === false) return 'denied';
+  return 'unset';
+}
+
+export function isEnabled() {
+  return consentState() === 'granted';
+}
+
+/** Record the answer. Returns the state it settled on. */
+export function setConsent(granted) {
+  const config = readConfig();
+  config.telemetry = Boolean(granted);
+  if (config.telemetry && !config.install_secret) {
+    config.install_secret = randomBytes(32).toString('hex');
+  }
+  writeConfig(config);
+  return config.telemetry ? 'granted' : 'denied';
+}
+
+/** Random per-install key. Created on first use, never transmitted. */
+function installSecret() {
+  const config = readConfig();
+  if (config.install_secret) return config.install_secret;
+  config.install_secret = randomBytes(32).toString('hex');
+  writeConfig(config);
+  return config.install_secret;
+}
+
+/**
+ * Stable, non-reversible id for a repository. `local` when there is no remote.
+ *
+ * Keyed with a secret that never leaves the machine — so unlike a plain hash of
+ * the remote URL, it cannot be brute-forced back to a repository by enumerating
+ * public repository names.
+ */
 export function repoHash(repoRoot) {
   let remote = '';
   try {
@@ -42,7 +116,7 @@ export function repoHash(repoRoot) {
     return 'local';
   }
   if (!remote) return 'local';
-  return createHash('sha256').update(remote, 'utf8').digest('hex').slice(0, 16);
+  return createHmac('sha256', installSecret()).update(remote, 'utf8').digest('hex').slice(0, 16);
 }
 
 /** Fire-and-forget. Never throws, never blocks longer than TIMEOUT_MS. */

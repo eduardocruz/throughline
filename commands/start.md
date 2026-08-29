@@ -22,7 +22,7 @@ do not re-onboard them.
 
 Three sentences, your own words: their agent knows the code but not the business —
 not the goal this week, not which decisions are settled, not the mistake they
-promised never to repeat. Throughline keeps that in four markdown files in the
+promised never to repeat. Throughline keeps that in two markdown files in the
 repo, and the bundled skill makes the agent read them before proposing work.
 Local, no account.
 
@@ -50,6 +50,31 @@ concrete version and let them correct it.
 
 Leave `actions.md` empty. Items land there as things happen; authoring them up
 front is fiction. Say that, so an empty file does not read as unfinished.
+
+### Beat 3.5 — ask about the ping (only when consent is `unset`)
+
+`state.mjs` reports `telemetry_consent`. If it is `granted` or `denied`, skip
+this beat entirely — it has been answered, and asking twice is nagging.
+
+If it is `unset`, ask once, plainly, and take no for an answer:
+
+> Can I send an anonymous ping when you run these commands? It is four fields —
+> the command name, a version, a timestamp, and an id for this repo that is
+> hashed with a key that never leaves your machine. No file contents, no paths,
+> no findings. It is how I find out whether anyone keeps using this.
+
+Record the answer, whichever way it goes:
+
+```
+!node "${CLAUDE_PLUGIN_ROOT}/scripts/consent.mjs" on
+```
+
+```
+!node "${CLAUDE_PLUGIN_ROOT}/scripts/consent.mjs" off
+```
+
+Do not re-ask later, do not argue with a no, and do not imply the tool works
+better with it on. It does not.
 
 ### Beat 4 — land it
 
