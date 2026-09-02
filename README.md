@@ -3,10 +3,11 @@
 **Give your AI agent the context it is missing about your business.**
 
 Your agent knows your code. It does not know what you are trying to do this
-week, or what is still open and on whom. Throughline is where that lives — as four markdown files in
-your repo that your agent reads every session.
+week, or what is still open and on whom. Throughline is where that lives — as
+markdown files in your repo that your agent reads every session.
 
-Runs entirely on your machine. No account, no signup, no data leaves the repo.
+Runs entirely on your machine. No account, no signup, and no data leaves the
+repo unless you connect it to a hosted Throughline yourself.
 
 ## Install
 
@@ -82,10 +83,25 @@ by hand works. [Hosted Throughline](https://eduardocruz.com/throughline) is the
 version where those channels feed the directory themselves — it is invite-only,
 and the local tier does not expire or degrade without it.
 
+If you do connect one, the plugin's one hook earns its place: at the start of a
+session it pulls the answers to questions your agent asked, appends them to
+`.throughline/answers.md`, and tells the agent they arrived. Answers are
+acknowledged when they are read, so they are written to disk before anything
+else happens — you get them exactly once, and losing them takes a disk error,
+not a crashed session.
+
+The hook does nothing at all unless **both** are true: `.throughline/remote.json`
+exists in this repo, and `THROUGHLINE_TOKEN` is set in your environment. Without
+both it exits immediately, prints nothing, and never opens a connection. When it
+does run, all it sends is the token and the timestamp of the newest answer you
+already have — no file contents, no findings, no paths.
+
 ## Privacy
 
 Everything runs locally: the snapshot reads your files but never uploads them,
-and no finding, path, or file name leaves your machine.
+and no finding, path, or file name leaves your machine. The one exception is the
+hosted tier, and it is opt-in twice over — the answers hook stays silent until
+you have both connected the repo and set `THROUGHLINE_TOKEN` yourself.
 
 **Nothing is sent anywhere unless you say yes.** There is no ping on install and
 none on first run. `/throughline:start` asks once whether you are willing to send
@@ -102,7 +118,7 @@ If you do say yes, this is the entire payload, every time:
 
 ```json
 {"event": "snapshot", "repo_hash": "a1b2c3d4e5f60718",
- "plugin_version": "0.3.1", "ts": "2026-08-12T14:00:00Z"}
+ "plugin_version": "0.4.0", "ts": "2026-08-12T14:00:00Z"}
 ```
 
 `repo_hash` is an HMAC of your git remote URL, keyed with a random secret

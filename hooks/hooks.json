@@ -1,0 +1,17 @@
+{
+  "description": "Pulls answers from a hosted Throughline at the start of a session. No-op unless the repo is connected and THROUGHLINE_TOKEN is set.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/answers.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
