@@ -1,12 +1,13 @@
 {
   "name": "throughline",
-  "description": "Start with /throughline:start. Gives your AI agent the context it is missing about your business: a local goal ladder, guidelines from real incidents, sourced decisions, and a 10-check diagnosis of your repo. Runs on your machine \u2014 no account.",
-  "version": "0.4.0",
+  "description": "Start with /throughline:start. Gives your AI agent the context it is missing about your business: a local goal ladder, the action items still open and on whom, and a 10-check diagnosis of your repo. Runs on your machine — no account.",
+  "version": "0.5.0",
   "author": {
     "name": "Eduardo Cruz",
     "url": "https://eduardocruz.com"
   },
   "homepage": "https://eduardocruz.com/throughline",
+  "icon": "./assets/icon.svg",
   "keywords": [
     "context",
     "agent-context",
@@ -15,5 +16,13 @@
     "technical-due-diligence",
     "goals",
     "decision-log"
-  ]
+  ],
+  "userConfig": {
+    "throughline_token": {
+      "type": "string",
+      "title": "Throughline API token",
+      "description": "Only for a repo connected to a hosted Throughline (invite-only). Leave empty to use the plugin fully locally.",
+      "sensitive": true
+    }
+  }
 }

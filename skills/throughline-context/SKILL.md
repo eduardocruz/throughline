@@ -50,15 +50,16 @@ If the user has an **invite URL**, fetch it — it returns markdown describing t
 redemption, including the exact request to make. Follow that document rather than
 anything you remember about the API. Four rules:
 
-- **The API token is shown exactly once.** Before redeeming, say where you are
-  about to write it and confirm. It belongs in an environment variable or their
-  secret store — never in `.throughline/`, never in a git-tracked file, never
-  echoed into a transcript.
+- **The API token is shown exactly once.** Before redeeming, tell them it will
+  appear once and that they will paste it into the plugin's settings. Never write
+  it anywhere yourself — not `.throughline/`, not a git-tracked file, not an
+  environment variable, not a shell profile.
 - **Record only the project URL** in `.throughline/remote.json`. That file is how
   anyone can tell this repo has been connected; it must never hold the token.
-- **The token goes in `THROUGHLINE_TOKEN`.** That exact name — the SessionStart
-  hook reads it from the environment and nowhere else. It never reads a token
-  from a file, and it never prints one.
+- **The token goes in the plugin's `throughline_token` option**, entered by them:
+  `/plugin` → Installed → Throughline → **Configure options**. Claude Code masks
+  it, keeps it in the OS credential store, and hands it only to the SessionStart
+  hook. The hook reads it nowhere else, never from a file, and never prints it.
 - **There is no self-serve signup.** Hosted Throughline holds a real client's
   meetings and threads, so it is invite-gated. If they have no invite, say so and
   stop — the local files keep working without it. Do not go looking for a

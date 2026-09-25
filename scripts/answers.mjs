@@ -6,7 +6,9 @@
  *
  *     1. `.throughline/remote.json` exists — this repo was deliberately
  *        connected to a hosted Throughline
- *     2. `THROUGHLINE_TOKEN` is set in the environment
+ *     2. the plugin's `throughline_token` option is set — Claude Code keeps it
+ *        in the OS credential store and hands it to this hook as
+ *        `CLAUDE_PLUGIN_OPTION_THROUGHLINE_TOKEN`
  *
  * Without both, it exits 0 and prints nothing. That is what keeps the local
  * tier's promise honest: an unconnected repo never touches the network here.
@@ -135,7 +137,7 @@ export function compose(existing, answers, latestAnswerAt) {
  */
 export async function pullAnswers({
   root = process.cwd(),
-  token = process.env.THROUGHLINE_TOKEN,
+  token = process.env.CLAUDE_PLUGIN_OPTION_THROUGHLINE_TOKEN,
   fetchImpl = globalThis.fetch,
 } = {}) {
   const projectUrl = readRemote(root);

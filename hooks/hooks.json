@@ -1,5 +1,5 @@
 {
-  "description": "Pulls answers from a hosted Throughline at the start of a session. No-op unless the repo is connected and THROUGHLINE_TOKEN is set.",
+  "description": "Pulls answers from a hosted Throughline at the start of a session. No-op unless the repo is connected and the throughline_token option is set.",
   "hooks": {
     "SessionStart": [
       {

@@ -212,7 +212,7 @@ describe('as a script', () => {
     const out = execFileSync(
       process.execPath,
       [path.join(import.meta.dirname, '..', 'scripts', 'answers.mjs'), root],
-      { encoding: 'utf8', env: { ...process.env, THROUGHLINE_TOKEN: 'secret' } },
+      { encoding: 'utf8', env: { ...process.env, CLAUDE_PLUGIN_OPTION_THROUGHLINE_TOKEN: 'secret' } },
     );
     assert.equal(out, '');
   });

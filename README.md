@@ -91,7 +91,9 @@ else happens — you get them exactly once, and losing them takes a disk error,
 not a crashed session.
 
 The hook does nothing at all unless **both** are true: `.throughline/remote.json`
-exists in this repo, and `THROUGHLINE_TOKEN` is set in your environment. Without
+exists in this repo, and the plugin's `throughline_token` option is set (`/plugin` →
+Installed → Throughline → **Configure options**; Claude Code masks it and keeps it
+in your OS credential store, never in a file). Without
 both it exits immediately, prints nothing, and never opens a connection. When it
 does run, all it sends is the token and the timestamp of the newest answer you
 already have — no file contents, no findings, no paths.
@@ -101,7 +103,7 @@ already have — no file contents, no findings, no paths.
 Everything runs locally: the snapshot reads your files but never uploads them,
 and no finding, path, or file name leaves your machine. The one exception is the
 hosted tier, and it is opt-in twice over — the answers hook stays silent until
-you have both connected the repo and set `THROUGHLINE_TOKEN` yourself.
+you have both connected the repo and set the `throughline_token` option yourself.
 
 **Nothing is sent anywhere unless you say yes.** There is no ping on install and
 none on first run. `/throughline:start` asks once whether you are willing to send
