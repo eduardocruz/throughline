@@ -1,6 +1,6 @@
 ---
 description: Create .throughline/ — the goal ladder and open action items your agent reads every session.
-allowed-tools: Bash(node:*)
+allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/init.mjs":*)
 ---
 
 Create the Throughline structure in the current repository:

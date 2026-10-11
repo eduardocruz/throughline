@@ -9,7 +9,7 @@
  * When it is on, this is what leaves the machine, in full:
  *
  *     {"event": "snapshot", "repo_hash": "a1b2c3d4e5f60718",
- *      "plugin_version": "0.4.0", "ts": "2026-08-12T14:00:00Z"}
+ *      "plugin_version": "0.6.0", "ts": "2026-08-12T14:00:00Z"}
  *
  * `repo_hash` is an HMAC of your git remote URL, keyed with a random secret
  * generated on your machine and never sent. It is stable across runs, so it can
@@ -36,7 +36,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const ENDPOINT = 'https://eduardocruz.com/agent-telemetry';
-export const PLUGIN_VERSION = '0.4.0';
+export const PLUGIN_VERSION = '0.6.0';
 const TIMEOUT_MS = 2000;
 
 export const CONFIG_DIR = process.env.THROUGHLINE_CONFIG_DIR

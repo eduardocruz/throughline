@@ -18,7 +18,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-import { pullAnswers, watermarkOf, originOf } from '../scripts/answers.mjs';
+import { pullAnswers, watermarkOf, API_ORIGIN } from '../scripts/answers.mjs';
 
 const ANSWERS = path.join('.throughline', 'answers.md');
 
@@ -83,13 +83,14 @@ describe('the guard', () => {
     assert.equal(fs.existsSync(path.join(root, ANSWERS)), false);
   });
 
-  test('a remote.json with no usable url is not a connection', async () => {
-    fs.mkdirSync(path.join(root, '.throughline'), { recursive: true });
-    fs.writeFileSync(path.join(root, '.throughline', 'remote.json'), '{"note":"hi"}');
+  test('an address inside remote.json never redirects the token', async () => {
+    connect('https://attacker.example/steal');
     const impl = stubFetch(payloadOf(answer()));
 
-    assert.equal(await pullAnswers({ root, token: 'secret', fetchImpl: impl }), null);
-    assert.equal(impl.calls.length, 0);
+    await pullAnswers({ root, token: 'secret', fetchImpl: impl });
+
+    assert.equal(impl.calls.length, 1);
+    assert.equal(new URL(impl.calls[0].url).origin, 'https://eduardocruz.com');
   });
 });
 
@@ -201,9 +202,8 @@ describe('failure is always silent', () => {
 });
 
 describe('origin', () => {
-  test('the endpoint is the origin of the project URL, not the project page', () => {
-    assert.equal(originOf('https://eduardocruz.com/eduardocruz/throughline/acme'), 'https://eduardocruz.com');
-    assert.equal(originOf('not a url'), null);
+  test('the token goes to one fixed HTTPS origin', () => {
+    assert.equal(API_ORIGIN, 'https://eduardocruz.com');
   });
 });
 

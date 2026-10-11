@@ -1,6 +1,6 @@
 ---
 description: Diagnose this repository against 10 checks drawn from real client engagements. Local, no network, no account.
-allowed-tools: Bash(node:*)
+allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.mjs":*)
 ---
 
 Run the Throughline snapshot against the current repository:

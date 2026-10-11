@@ -1,6 +1,6 @@
 ---
 description: Measure whether the context in .throughline/ is still true, or has quietly gone stale.
-allowed-tools: Bash(node:*)
+allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/check.mjs":*)
 ---
 
 Measure decay of the local Throughline context:

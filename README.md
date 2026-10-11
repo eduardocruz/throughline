@@ -6,8 +6,9 @@ Your agent knows your code. It does not know what you are trying to do this
 week, or what is still open and on whom. Throughline is where that lives — as
 markdown files in your repo that your agent reads every session.
 
-Runs entirely on your machine. No account, no signup, and no data leaves the
-repo unless you connect it to a hosted Throughline yourself.
+Runs entirely on your machine. No account and no signup. Nothing leaves the
+repo unless you opt in: to an anonymous usage ping (off until you say yes — see
+[Privacy](#privacy)) or by connecting a hosted Throughline yourself.
 
 ## Install
 
@@ -100,6 +101,9 @@ already have — no file contents, no findings, no paths.
 
 ## Privacy
 
+Full policy, covering the usage ping and the hosted service — what is collected,
+how it is used and how long it is kept: <https://eduardocruz.com/privacy-policy>.
+
 Everything runs locally: the snapshot reads your files but never uploads them,
 and no finding, path, or file name leaves your machine. The one exception is the
 hosted tier, and it is opt-in twice over — the answers hook stays silent until
@@ -120,7 +124,7 @@ If you do say yes, this is the entire payload, every time:
 
 ```json
 {"event": "snapshot", "repo_hash": "a1b2c3d4e5f60718",
- "plugin_version": "0.4.0", "ts": "2026-08-12T14:00:00Z"}
+ "plugin_version": "0.6.0", "ts": "2026-08-12T14:00:00Z"}
 ```
 
 `repo_hash` is an HMAC of your git remote URL, keyed with a random secret

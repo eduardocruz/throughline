@@ -1,6 +1,6 @@
 ---
 description: Start here. Walks you through Throughline from wherever this repository currently is.
-allowed-tools: Bash(node:*)
+allowed-tools: Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/state.mjs":*), Bash(node "${CLAUDE_PLUGIN_ROOT}/scripts/consent.mjs":*)
 ---
 
 Read the state of this repository:
